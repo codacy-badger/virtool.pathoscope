@@ -8,6 +8,14 @@ import sys
 SAM_PATH = os.path.join(sys.path[0], "tests", "test_files", "test_al.sam")
 SAM_50_PATH = os.path.join(sys.path[0], "tests", "test_files", "sam_50.sam")
 
+def pytest_addoption(parser):
+    parser.addoption(
+        "--db-host",
+        action="store",
+        default="localhost"
+    )
+
+
 class StaticTime:
 
     datetime = arrow.Arrow(2015, 10, 6, 20, 0, 0).naive
@@ -81,8 +89,9 @@ def test_db_name(worker_id):
 
 
 @pytest.fixture
-def dbs(test_db_name):
-    client = pymongo.MongoClient()
+def dbs(request, test_db_name):
+    db_host = request.config.getoption("--db-host")
+    client = pymongo.MongoClient("mongodb://{}:27017/{}".format(db_host, test_db_name))
     client.drop_database(test_db_name)
     yield client[test_db_name]
     client.drop_database(test_db_name)
