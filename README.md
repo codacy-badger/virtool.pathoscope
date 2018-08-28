@@ -1,9 +1,10 @@
-`virtool.nuvs`
+`virtool.pathoscope`
 ==============
 
-A Python package for running NuVs analysis in several environments.
+A Python package for running Pathoscope analysis as implemented in Virtool in several environments.
 
-NuVs is a bioinformatics pipeline for novel virus sequence candidates in Illumina libraries.
+Virtool Pathoscope is a bioinformatics pipeline for identifying known viruses from a reference database in Illumina
+libraries.
 
 [![Build Status](https://travis-ci.com/virtool/virtool.pathoscope.svg?branch=master)](https://travis-ci.com/virtool/virtool.nuvs)
 
