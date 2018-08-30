@@ -115,7 +115,7 @@ def test_check_db(tmpdir, paired, dbs, mock_job):
 
     mock_job.check_db()
 
-    sample_path = os.path.join(tmpdir, "samples", "foobar")
+    sample_path = os.path.join(str(tmpdir), "samples", "foobar")
 
     assert mock_job.params["read_count"] == 1337
 
