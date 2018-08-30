@@ -179,7 +179,7 @@ def test_map_otus(tmpdir, dbs, mock_job):
 
     mock_job.map_otus()
 
-    assert mock_job.intermediate["to_otus"] == {
+    assert set(mock_job.intermediate["to_otus"]) == {
         "NC_013110",
         "NC_017938",
         "NC_006057",
@@ -268,7 +268,8 @@ def test_map_subtraction(dbs, mock_job):
     mock_job.map_subtraction()
 
     with open(TO_SUBTRACTION_PATH, "r") as handle:
-        assert mock_job.intermediate["to_subtraction"] == json.load(handle)
+
+        assert set(mock_job.intermediate["to_subtraction"]) == set(json.load(handle))
 
 
 def test_subtract_mapping(dbs, mock_job):
@@ -367,16 +368,18 @@ def test_pathoscope(dbs, mock_job):
     mock_job.pathoscope()
 
     # Check that a new VTA is written.
-    assert filecmp.cmp(
-        os.path.join(mock_job.params["analysis_path"], "reassigned.vta"),
-        UPDATED_VTA_PATH
-    )
+    with open(UPDATED_VTA_PATH, "r") as f:
+        updated_vta = {line.rstrip() for line in f}
+
+    with open(os.path.join(mock_job.params["analysis_path"], "reassigned.vta"), "r") as f:
+        assert updated_vta == {line.rstrip() for line in f}
 
     # Check that the correct report.tsv file is written.
-    assert filecmp.cmp(
-        os.path.join(mock_job.params["analysis_path"], "report.tsv"),
-        TSV_PATH
-    )
+    with open(TSV_PATH, "r") as f:
+        updated_tsv = {line.rstrip() for line in f}
+
+    with open(os.path.join(mock_job.params["analysis_path"], "report.tsv"), "r") as f:
+        assert updated_tsv == {line.rstrip() for line in f}
 
     with open(DIAGNOSIS_PATH, "r") as handle:
         assert mock_job.results == {
